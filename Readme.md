@@ -2,6 +2,8 @@
 
 > **Demo Project**: Implementasi Data Warehouse dengan Star Schema menggunakan ClickHouse, DBT, dan Medallion Architecture untuk presentasi pembelajaran OLAP vs OLTP.
 
+> **Dataset Required**: Download the AdventureWorks CSV files from [here](https://www.kaggle.com/datasets/ukveteran/adventure-works) before proceeding.
+
 ---
 
 ## 🎯 Overview
