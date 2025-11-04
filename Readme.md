@@ -2,18 +2,6 @@
 
 > **Demo Project**: Implementasi Data Warehouse dengan Star Schema menggunakan ClickHouse, DBT, dan Medallion Architecture untuk presentasi pembelajaran OLAP vs OLTP.
 
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Detailed Setup](#detailed-setup)
-- [Data Pipeline](#data-pipeline)
-- [OLAP Queries Examples](#olap-queries-examples)
-- [Troubleshooting](#troubleshooting)
-
 ---
 
 ## 🎯 Overview
@@ -493,9 +481,6 @@ GROUP BY p.ProductCategoryName
 ORDER BY p.ProductCategoryName;
 ``` -->
 
----
-
----
 
 ## 📖 References
 
