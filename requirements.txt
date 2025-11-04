@@ -1,0 +1,5 @@
+clickhouse-connect==0.7.16
+pandas==2.0.0
+numpy==1.24.0
+dbt-core==1.5.0
+dbt-clickhouse==1.5.0

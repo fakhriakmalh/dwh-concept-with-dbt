@@ -1,0 +1,15 @@
+adventureworks:
+  # Tipe adapter database yang digunakan
+  target: silver
+  outputs:
+    silver:
+      type: clickhouse
+      host: localhost 
+      port: 8123
+      user: default
+      database: silver
+      schema: silver
+      password: password123
+      threads: 4         # Jumlah thread yang digunakan dbt
+      secure: False      # Gunakan SSL/TLS jika True (False untuk setup lokal)
+      driver: http     

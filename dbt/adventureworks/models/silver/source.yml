@@ -1,0 +1,49 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: bronze
+    schema: bronze  # Ini nama database di ClickHouse
+    description: "Raw data imported from CSV files"
+    
+    tables:
+      # ===== DATE/CALENDAR =====
+      - name: Calendar
+        description: "Date/calendar data from AdventureWorks_Calendar.csv"
+        identifier: Calendar  # Nama table actual di ClickHouse
+      
+      # ===== PRODUCTS =====
+      - name: Products
+        description: "Product master data from AdventureWorks_Products.csv"
+        identifier: Products
+        
+      - name: Product_Categories
+        description: "Product categories from AdventureWorks_Product_Categories.csv"
+        identifier: Product_Categories
+        
+      - name: Product_Subcategories
+        description: "Product subcategories from AdventureWorks_Product_Subcategories.csv"
+        identifier: Product_Subcategories
+      
+      # ===== CUSTOMERS =====
+      - name: Customers
+        description: "Customer master data from AdventureWorks_Customers.csv"
+        identifier: Customers
+      
+      # ===== TERRITORIES =====
+      - name: Territories
+        description: "Sales territories from AdventureWorks_Territories.csv"
+        identifier: Territories
+      
+      # ===== SALES TRANSACTIONS =====
+      - name: Sales_2015
+        description: "Sales transactions for 2015 from AdventureWorks_Sales_2015.csv"
+        identifier: Sales_2015
+        
+      - name: Sales_2016
+        description: "Sales transactions for 2016 from AdventureWorks_Sales_2016.csv"
+        identifier: Sales_2016
+        
+      - name: Sales_2017
+        description: "Sales transactions for 2017 from AdventureWorks_Sales_2017.csv"
+        identifier: Sales_2017
