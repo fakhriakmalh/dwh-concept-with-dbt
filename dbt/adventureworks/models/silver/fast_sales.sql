@@ -84,4 +84,4 @@ FROM all_sales
 WHERE 
     OrderDate IS NOT NULL
     AND ProductKey IS NOT NULL
-    AND CustomerKey IS NOT NULL;
+    AND CustomerKey IS NOT NULL

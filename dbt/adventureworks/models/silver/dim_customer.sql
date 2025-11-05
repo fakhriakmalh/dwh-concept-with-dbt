@@ -1,49 +1,49 @@
 {{
     config(
         materialized='table',
+        schema='silver',
         engine='MergeTree()',
         order_by='CustomerKey',
         settings={'allow_nullable_key': 1}
     )
 }}
 
-WITH customers AS (
+-- CTE untuk membersihkan dan menyiapkan kolom
+WITH cleaned_customers AS (
     SELECT
         CustomerKey,
         
-        -- Name
+        -- Name & Contact
         COALESCE(Prefix, '') AS Prefix,
         FirstName,
-        COALESCE(MiddleName, '') AS MiddleName,
         LastName,
-        COALESCE(Suffix, '') AS Suffix,
-        
-        -- Contact
         COALESCE(EmailAddress, '') AS EmailAddress,
-        COALESCE(Phone, '') AS Phone,
         
-        -- Address
-        COALESCE(AddressLine1, '') AS AddressLine1,
-        COALESCE(AddressLine2, '') AS AddressLine2,
-        COALESCE(City, '') AS City,
-        COALESCE(StateProvince, '') AS StateProvince,
-        COALESCE(CountryRegion, '') AS CountryRegion,
-        COALESCE(PostalCode, '') AS PostalCode,
+        -- Demografi (Konversi dan Pembersihan Tipe Data)
         
-        -- Demographics
-        COALESCE(BirthDate, toDate('1900-01-01')) AS BirthDate,
+        -- 1. Perbaikan BirthDate (dari error sebelumnya: String vs Date)
+        COALESCE(
+            toDateOrNull(BirthDate), 
+            toDate('1900-01-01')     
+        ) AS BirthDate,
+        
         COALESCE(MaritalStatus, 'U') AS MaritalStatus,
         COALESCE(Gender, 'U') AS Gender,
-        COALESCE(YearlyIncome, 0) AS YearlyIncome,
-        COALESCE(TotalChildren, 0) AS TotalChildren,
-        COALESCE(NumberChildrenAtHome, 0) AS NumberChildrenAtHome,
-        COALESCE(Education, 'Unknown') AS Education,
+        
+        -- -- 2. PERBAIKAN ERROR BARU: Mengubah nilai pengganti 0 menjadi '0' (String)
+        AnnualIncome,
+        TotalChildren,
+        -- COALESCE(AnnualIncome, '0') AS YearlyIncome_String, 
+        -- COALESCE(TotalChildren, '0') AS TotalChildren_String,
+        
+        COALESCE(EducationLevel, 'Unknown') AS Education, 
         COALESCE(Occupation, 'Unknown') AS Occupation,
         COALESCE(HomeOwner, 'Unknown') AS HomeOwner
         
     FROM {{ source('bronze', 'Customers') }}
 )
 
+-- Final SELECT: Konversi String Numerik menjadi Tipe Numerik (Float64/Int32)
 SELECT
     -- Primary Key
     CustomerKey,
@@ -52,27 +52,17 @@ SELECT
     concat(
         CASE WHEN Prefix != '' THEN concat(Prefix, ' ') ELSE '' END,
         FirstName, ' ',
-        CASE WHEN MiddleName != '' THEN concat(MiddleName, ' ') ELSE '' END,
-        LastName,
-        CASE WHEN Suffix != '' THEN concat(' ', Suffix) ELSE '' END
+        LastName
     ) AS FullName,
     
     FirstName,
     LastName,
-    
-    -- Contact
     EmailAddress,
-    Phone,
-    
-    -- Address
-    AddressLine1,
-    City,
-    StateProvince,
-    CountryRegion,
-    PostalCode,
     
     -- Demographics
     BirthDate,
+    
+    -- Age Calculation
     CASE 
         WHEN BirthDate != toDate('1900-01-01') 
         THEN dateDiff('year', BirthDate, today())
@@ -93,16 +83,18 @@ SELECT
         ELSE 'Unknown'
     END AS GenderDesc,
     
-    YearlyIncome,
-    CASE
-        WHEN YearlyIncome < 25000 THEN 'Low'
-        WHEN YearlyIncome < 75000 THEN 'Medium'
-        WHEN YearlyIncome < 150000 THEN 'High'
-        ELSE 'Very High'
-    END AS IncomeGroup,
+    -- KONVERSI: Mengonversi String yang sudah dibersihkan menjadi Float64/Int32
+    -- toFloat64(YearlyIncome_String) AS YearlyIncome,
+    -- toInt32(TotalChildren_String) AS TotalChildren,
     
-    TotalChildren,
-    NumberChildrenAtHome,
+    -- -- Derivasi: Income Group (Menggunakan kolom yang sudah dikonversi)
+    -- CASE
+    --     WHEN YearlyIncome < 25000 THEN 'Low'
+    --     WHEN YearlyIncome < 75000 THEN 'Medium'
+    --     WHEN YearlyIncome < 150000 THEN 'High'
+    --     ELSE 'Very High'
+    -- END AS IncomeGroup,
+    
     Education,
     Occupation,
     HomeOwner,
@@ -110,4 +102,4 @@ SELECT
     -- Metadata
     now() AS LoadDate
     
-FROM customers;
+FROM cleaned_customers
