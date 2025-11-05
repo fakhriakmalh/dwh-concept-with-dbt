@@ -13,7 +13,6 @@ Project ini mendemonstrasikan:
 - ✅ **ELT Process** - Extract, Load, Transform menggunakan DBT
 - ✅ **Medallion Architecture** - Bronze → Silver layer
 - ✅ **Star Schema** - Dimensional modeling (Fact & Dimension tables)
-- ✅ **OLAP Operations** - Drill-down, Roll-up, Slice, Dice
 - ✅ **Modern Data Stack** - ClickHouse + DBT
 
 ### Tech Stack
@@ -368,12 +367,6 @@ dbt docs serve  # Open browser at http://localhost:8080
    │   ├── Dim_Territory (geography)
    │   └── Fact_Sales (transactional metrics)
    └── Write to Silver layer
-
-3. VALIDATE (DBT Tests)
-   ├── Unique key constraints
-   ├── Not null checks
-   ├── Referential integrity
-   └── Custom business rules
 ```
 
 ### Re-running Pipeline
